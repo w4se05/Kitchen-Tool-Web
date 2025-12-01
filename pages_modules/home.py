@@ -15,7 +15,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import streamlit as st
-from streamlit_webrtc import WebRtcMode, webrtc_streamer
+from streamlit_webrtc import WebRtcMode, webrtc_streamer, RTCConfiguration
 from streamlit_webrtc import __version__ as st_webrtc_version
 
 from sample_utils.download import download_file
@@ -23,6 +23,11 @@ from sample_utils.download import download_file
 # ==========================================
 # 1. GLOBAL CONFIG & CONSTANTS (Run once)
 # ==========================================
+# Cấu hình STUN server của Google (Miễn phí & Ổn định)
+RTC_CONFIGURATION = RTCConfiguration(
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+)
+
 HERE = Path(__file__).parent
 ROOT = HERE.parent
 
@@ -208,6 +213,7 @@ def app():
         webrtc_ctx = webrtc_streamer(
             key="object-detection",
             mode=WebRtcMode.SENDRECV,
+            rtc_configuration=RTC_CONFIGURATION,
             video_frame_callback=video_frame_callback,
             media_stream_constraints={"video": True, "audio": False},
             async_processing=True,
