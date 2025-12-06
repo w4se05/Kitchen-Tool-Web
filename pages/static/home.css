@@ -1,0 +1,58 @@
+/* Style cho bảng kết quả */
+table.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-family: sans-serif;
+}
+
+/* Header của bảng */
+table.custom-table thead th {
+    background-color: #FF4B4B; /* Màu đỏ chủ đạo */
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Các dòng dữ liệu */
+table.custom-table tbody td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eeeeee;
+    color: #333;
+    vertical-align: middle;
+}
+
+/* Hiệu ứng khi di chuột vào dòng */
+table.custom-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Nút bấm Link */
+a.result-btn {
+    display: inline-block;
+    padding: 5px 12px;
+    background-color: #007bff; /* Màu xanh nút bấm */
+    color: white !important;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+a.result-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Badge điểm số */
+span.score-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 14px;
+}

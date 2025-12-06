@@ -77,69 +77,10 @@ net = get_model()
 # 2. MAIN APP FUNCTION
 # ==========================================
 def app():
-    # --- 1. CHÈN CSS ĐỂ LÀM ĐẸP BẢNG KẾT QUẢ ---
-    st.markdown("""
-    <style>
-        /* Style cho bảng kết quả */
-        table.custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            font-family: sans-serif;
-        }
-        
-        /* Header của bảng */
-        table.custom-table thead th {
-            background-color: #FF4B4B; /* Màu đỏ chủ đạo */
-            color: white;
-            padding: 12px 15px;
-            text-align: left;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        /* Các dòng dữ liệu */
-        table.custom-table tbody td {
-            padding: 10px 15px;
-            border-bottom: 1px solid #eeeeee;
-            color: #333;
-            vertical-align: middle;
-        }
-        
-        /* Hiệu ứng khi di chuột vào dòng */
-        table.custom-table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-        
-        /* Nút bấm Link */
-        a.result-btn {
-            display: inline-block;
-            padding: 5px 12px;
-            background-color: #007bff; /* Màu xanh nút bấm */
-            color: white !important;
-            text-decoration: none;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        a.result-btn:hover {
-            background-color: #0056b3;
-        }
-        
-        /* Badge điểm số */
-        span.score-badge {
-            background-color: #e9ecef;
-            color: #495057;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-    </style>
-    """, unsafe_allow_html=True)
+    # Load CSS File
+    css_file_path = Path(__file__).parent / "static" / "home.css"
+    with open(css_file_path, "r", encoding="utf-8") as css_file:
+        st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
     # -------------------------------------------
 
     st.title("📹 Object Detection Live Feed")
@@ -218,21 +159,24 @@ def app():
     with col1:
         st.write("#### Live Camera")
         webrtc_ctx = webrtc_streamer(
-            key="object-detection",
-            mode=WebRtcMode.SENDRECV,
-            rtc_configuration=RTC_CONFIGURATION,
-            video_frame_callback=video_frame_callback,
-            media_stream_constraints={"video": True, "audio": False},
-            async_processing=True,
-            desired_playing_state=desired_state # Tự động bật cam nếu có tín hiệu
+            key = "object-detection",
+            mode = WebRtcMode.SENDRECV,
+            rtc_configuration = RTC_CONFIGURATION,
+            video_frame_callback = video_frame_callback,
+            media_stream_constraints = {
+                "video": True, 
+                "audio": False
+            },
+            async_processing = True,
+            desired_playing_state = desired_state
         )
-        # --- LOGIC RESET: CHỈ TẮT TRIGGER KHI CAM ĐÃ CHẠY ---
-        if should_auto_start and webrtc_ctx.state.playing:
-            # Lúc này mới tắt lệnh đi để trả lại quyền kiểm soát cho nút Stop
-            st.session_state["auto_start_trigger"] = False
-            st.rerun() # Rerun một cái để cập nhật giao diện
 
-    # --- E. DISPLAY RESULT ---
+        if should_auto_start and webrtc_ctx.state.playing:
+            st.session_state["auto_start_trigger"] = False
+
+            #Rerun to update
+            st.rerun()
+
     with col2:
         st.write("#### Results")
         if st.checkbox("Show detected labels", value=True):
