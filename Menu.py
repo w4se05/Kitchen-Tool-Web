@@ -1,5 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+from ultralytics import YOLO
+
 import pages.home as home
 import pages.wikipedia as wikipedia
 import pages.about_us as about_us
