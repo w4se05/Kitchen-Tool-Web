@@ -39,13 +39,30 @@ ROOT = HERE.parent
 
 logger = logging.getLogger(__name__)
 
-MODEL_URL = "https://github.com/robmarkcole/object-detection-app/raw/master/model/MobileNetSSD_deploy.caffemodel"
 MODEL_LOCAL_PATH = "../models/best_kc_tool.pt"
 CLASSES = [
-    "Spoon", "Spoon (Wooden)", "Fork", "bird", "boat", "bottle", "bus", "car", "cat", 
-    "chair", "cow", "diningtable", "dog", "horse", "Pot", "person", "pottedplant", 
-    "sheep", "sofa", "tvmonitor"
+    "Spoon",
+    "Spoon (Wooden)",
+    "Fork",
+    "Chopsticks",
+    "Knife (Butter)",
+    "Knife (Kitchen)",
+    "Knife (Peeler)",
+    "Knife (Cleaver)",
+    "Scissors",
+    "Tongs",
+    "Bowl",
+    "Plate",
+    "Cup",
+    "Glass",
+    "Pot",
+    "Oven",
+    "Toaster",
+    "Microwave",
+    "Refrigerator",
+    "Dining Table",
 ]
+IDX_TO_NAME = {i: name for i, name in enumerate(CLASSES)}
 
 class Detection(NamedTuple):
     class_id: int
@@ -165,6 +182,7 @@ def app():
 
         # We need to convert the image to RGB before passing to model
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
         # Run inference
         results = NET.predict(source=image_rgb, conf=score_threshold, verbose=False)
         h, w = image.shape[:2]
@@ -172,7 +190,8 @@ def app():
 
         # Draw boxes
         for detection in output:
-            caption = f"{detection.cls[0]}: {round(detection.conf[0] * 100, 2)}%"
+            name = IDX_TO_NAME[int(detection.cls[0])]
+            caption = f"{name}: {round(detection.conf[0] * 100, 2)}%"
             color = COLORS[int(detection.cls[0])]
             xmin, ymin, xmax, ymax = detection.xyxy[0].astype("int")
 
