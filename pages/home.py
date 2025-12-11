@@ -8,7 +8,7 @@ import logging
 import queue
 from pathlib import Path
 from typing import List, NamedTuple
-
+import os
 import aiortc
 import av
 import cv2
@@ -17,7 +17,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_webrtc import WebRtcMode, webrtc_streamer, RTCConfiguration
 from streamlit_webrtc import __version__ as st_webrtc_version
-
+from ultralytics import YOLO
 from utils.download import download_file
 
 # ==========================================
@@ -37,18 +37,32 @@ RTC_CONFIGURATION = RTCConfiguration(
 HERE = Path(__file__).parent
 ROOT = HERE.parent
 
-logger = logging.getLogger(__name__)
 
-MODEL_URL = "https://github.com/robmarkcole/object-detection-app/raw/master/model/MobileNetSSD_deploy.caffemodel"
-MODEL_LOCAL_PATH = ROOT / "./models/MobileNetSSD_deploy.caffemodel"
-PROTOTXT_URL = "https://github.com/robmarkcole/object-detection-app/raw/master/model/MobileNetSSD_deploy.prototxt.txt"
-PROTOTXT_LOCAL_PATH = ROOT / "./models/MobileNetSSD_deploy.prototxt.txt"
 
+MODEL_LOCAL_PATH = "./models/best_kc_tool.pt"
 CLASSES = [
-    "background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", 
-    "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", 
-    "sheep", "sofa", "train", "tvmonitor",
+    "Spoon",
+    "Spoon (Wooden)",
+    "Fork",
+    "Chopsticks",
+    "Knife (Butter)",
+    "Knife (Kitchen)",
+    "Knife (Peeler)",
+    "Knife (Cleaver)",
+    "Scissors",
+    "Tongs",
+    "Bowl",
+    "Plate",
+    "Cup",
+    "Glass",
+    "Pot",
+    "Oven",
+    "Toaster",
+    "Microwave",
+    "Refrigerator",
+    "Dining Table",
 ]
+IDX_TO_NAME = {i: name for i, name in enumerate(CLASSES)}
 
 class Detection(NamedTuple):
     class_id: int
@@ -63,24 +77,78 @@ def generate_label_colors():
 
 COLORS = generate_label_colors()
 
-download_file(MODEL_URL, MODEL_LOCAL_PATH, expected_size=23147564)
-download_file(PROTOTXT_URL, PROTOTXT_LOCAL_PATH, expected_size=29353)
-
-def get_model():
-    return cv2.dnn.readNetFromCaffe(str(PROTOTXT_LOCAL_PATH), str(MODEL_LOCAL_PATH))
+# download_file(MODEL_URL, MODEL_LOCAL_PATH, expected_size=23147564)
 
 # Load model globally so it's fast
-net = get_model()
-
+NET = YOLO(Path(MODEL_LOCAL_PATH))
 
 # ==========================================
 # 2. MAIN APP FUNCTION
 # ==========================================
-def app():
-    # Load CSS File
-    css_file_path = Path(__file__).parent / "static" / "home.css"
-    with open(css_file_path, "r", encoding="utf-8") as css_file:
-        st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
+def home_app():
+    # --- 1. CHÈN CSS ĐỂ LÀM ĐẸP BẢNG KẾT QUẢ ---
+    st.markdown("""
+    <style>
+        /* Style cho bảng kết quả */
+        table.custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-family: sans-serif;
+        }
+        
+        /* Header của bảng */
+        table.custom-table thead th {
+            background-color: #FF4B4B; /* Màu đỏ chủ đạo */
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* Các dòng dữ liệu */
+        table.custom-table tbody td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eeeeee;
+            color: #333;
+            vertical-align: middle;
+        }
+        
+        /* Hiệu ứng khi di chuột vào dòng */
+        table.custom-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Nút bấm Link */
+        a.result-btn {
+            display: inline-block;
+            padding: 5px 12px;
+            background-color: #007bff; /* Màu xanh nút bấm */
+            color: white !important;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        a.result-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Badge điểm số */
+        span.score-badge {
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+    """, unsafe_allow_html=True)
     # -------------------------------------------
 
     st.title("📹 Object Detection Live Feed")
@@ -110,40 +178,22 @@ def app():
     # DEFINE CALLBACK (Must be inside app() to see 'score_threshold')
     # ---------------------------------------------------------
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-        image = frame.to_ndarray(format="bgr24")
+        image = frame.to_ndarray(format="bgr24") # (480, 640, 3)
+
+        # We need to convert the image to RGB before passing to model
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # Run inference
-        blob = cv2.dnn.blobFromImage(
-            image=cv2.resize(image, (300, 300)),
-            scalefactor=0.007843,
-            size=(300, 300),
-            mean=(127.5, 127.5, 127.5),
-        )
-        net.setInput(blob)
-        output = net.forward()
-
+        results = NET.predict(source=image_rgb, conf=score_threshold, verbose=False)
         h, w = image.shape[:2]
-
-        # Convert output
-        output = output.squeeze()
-        output = output[output[:, 2] >= score_threshold]
-        
-        detections = [
-            Detection(
-                class_id=int(detection[1]),
-                label=CLASSES[int(detection[1])],
-                score=float(detection[2]),
-                box=(detection[3:7] * np.array([w, h, w, h])),
-                note=f"{CLASSES[int(detection[1])]}"
-            )
-            for detection in output
-        ]
+        output = results[0].boxes.cpu().numpy()  # (N, 6) format: [x1, y1, x2, y2, score, class]
 
         # Draw boxes
-        for detection in detections:
-            caption = f"{detection.label}: {round(detection.score * 100, 2)}%"
-            color = COLORS[detection.class_id]
-            xmin, ymin, xmax, ymax = detection.box.astype("int")
+        for detection in output:
+            name = IDX_TO_NAME[int(detection.cls[0])]
+            caption = f"{name}: {round(detection.conf[0] * 100, 2)}%"
+            color = COLORS[int(detection.cls[0])]
+            xmin, ymin, xmax, ymax = detection.xyxy[0].astype("int")
 
             cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, 2)
             cv2.putText(
@@ -152,7 +202,7 @@ def app():
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2,
             )
 
-        result_queue.put(detections)
+        # result_queue.put(detections)
         return av.VideoFrame.from_ndarray(image, format="bgr24")
 
     # --- D. DISPLAY CAMERA ---
