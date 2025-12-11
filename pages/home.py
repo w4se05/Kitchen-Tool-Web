@@ -36,7 +36,7 @@ RTC_CONFIGURATION = RTCConfiguration(
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent
-import os
+
 
 
 MODEL_LOCAL_PATH = "./models/best_kc_tool.pt"
