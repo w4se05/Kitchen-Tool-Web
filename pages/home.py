@@ -5,6 +5,7 @@ https://github.com/robmarkcole/object-detection-app
 
 import queue
 from pathlib import Path
+import time
 from typing import List, NamedTuple
 import av
 import cv2
@@ -215,14 +216,15 @@ def home_app():
 
     with col2:
         st.write("#### Results")
-        show_labels = st.checkbox("Show detected labels", value=True)
-        if show_labels and webrtc_ctx.state.playing:
-            labels_placeholder = st.empty()
+        labels_placeholder = st.empty()
 
-            # Poll the queue lightly once per render; avoid infinite loops
+        # We only loop while the stream is playing. UI widgets won't be processed during this loop,
+        # so avoid using a checkbox to control the loop itself.
+        while webrtc_ctx.state.playing:
+            # Pull the latest available detections without blocking too long
             try:
                 result = result_queue.get(timeout=0.1)
-                # Drain extras to keep most recent
+                # Drain to keep only the most recent batch
                 while not result_queue.empty():
                     result = result_queue.get_nowait()
             except queue.Empty:
@@ -232,20 +234,19 @@ def home_app():
                 df = pd.DataFrame(result)
                 if not df.empty:
                     df["Object"] = df["label"].str.capitalize()
-                    df["Confidence"] = df["score"].apply(
-                        lambda x: f'<span class="score-badge">{x*100:.1f}%</span>'
-                    )
+                    df["Confidence"] = df["score"].apply(lambda x: f'<span class="score-badge">{x*100:.1f}%</span>')
                     df["Action"] = df["label"].apply(
                         lambda x: f'<a href="./?nav=Wiki%20Search&tab={quote(x)}" class="result-btn">Wiki ➜</a>'
                     )
-
                     display_df = df[["Object", "Confidence", "Action"]]
                     html_table = display_df.to_html(escape=False, index=False, classes="custom-table")
                     labels_placeholder.markdown(html_table, unsafe_allow_html=True)
                 else:
                     labels_placeholder.info("Waiting for objects...")
             else:
-                st.info("No detections yet. Move an object into the frame.")
+                labels_placeholder.info("No detections yet. Move an object into the frame.")
+            time.sleep(0.1)
+        labels_placeholder.empty()
 
     # Footer (Full Width)
     st.markdown("---")
