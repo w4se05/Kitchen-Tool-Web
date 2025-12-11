@@ -17,9 +17,6 @@ from ultralytics import YOLO
 from utils.download import download_file
 from urllib.parse import quote
 
-# ==========================================
-# 1. GLOBAL CONFIG & CONSTANTS (Run once)
-# ==========================================
 # Cấu hình STUN server của Google (Miễn phí & Ổn định)
 RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [
