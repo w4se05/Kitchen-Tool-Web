@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import streamlit as st
 
-def app():
+def wikipedia_app():
     # Load Wiki Data from JSON file
     json_file_path = Path(__file__).parent / "data" / "wiki_data.json"
     with open(json_file_path, "r", encoding="utf-8") as file:

@@ -2,9 +2,9 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from ultralytics import YOLO
 
-import pages.home as home
-import pages.wikipedia as wikipedia
-import pages.about_us as about_us
+from pages.home import home_app
+from pages.wikipedia import wikipedia_app
+from pages.about_us import about_us_app
 
 # 1. Page Configuration
 st.set_page_config(
@@ -82,8 +82,8 @@ if mapping[selected] != st.session_state["selected_index"]:
 # 5. Load Pages
 # ------------------------------------------------------------------
 if selected == "Home":
-    home.app()
+    home_app()
 elif selected == "Wiki Search":
-    wikipedia.app()
+    wikipedia_app()
 elif selected == "About Us":
-    about_us.app()
+    about_us_app()

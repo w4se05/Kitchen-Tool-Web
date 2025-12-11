@@ -2,7 +2,7 @@ import streamlit as st
 import json
 from pathlib import Path
 
-def app():
+def about_us_app():
     # Load data from JSON file
     json_file_path = Path(__file__).parent / "data" / "about_us.json"
     with open(json_file_path, "r", encoding="utf-8") as file:

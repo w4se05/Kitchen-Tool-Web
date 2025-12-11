@@ -85,7 +85,7 @@ NET = YOLO(Path(MODEL_LOCAL_PATH))
 # ==========================================
 # 2. MAIN APP FUNCTION
 # ==========================================
-def app():
+def home_app():
     # --- 1. CHÈN CSS ĐỂ LÀM ĐẸP BẢNG KẾT QUẢ ---
     st.markdown("""
     <style>
