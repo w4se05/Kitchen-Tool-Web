@@ -1,2 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+*.log
+*.sqlite3
+
+# Virtual environments
+.env
+.venv
 venv/
-**/__pycache__/
+ENV/
+env/
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/*.yaml
+.streamlit/*.yml
+
+# Testing and linting
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.ruff_cache/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Caches & temp
+.cache/
+tmp/
