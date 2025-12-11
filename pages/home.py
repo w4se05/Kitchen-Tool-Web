@@ -39,7 +39,7 @@ ROOT = HERE.parent
 
 
 
-MODEL_LOCAL_PATH = "./models/best_kc_tool.pt"
+MODEL_LOCAL_PATH = "./models/best.pt"
 CLASSES = [
     "Spoon",
     "Spoon (Wooden)",
