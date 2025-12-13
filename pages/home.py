@@ -90,7 +90,7 @@ def home_app():
         st.session_state["home_css_loaded"] = True
 
     st.title("📹 Object Detection Live Feed")
-    st.caption("Real-time MobileNet SSD Object Detection")
+    st.caption("Real-time YOLOv11 Kitchen Utils Detection!")
 
     # Controls and state
     should_auto_start = st.session_state.get("auto_start_trigger", False)
