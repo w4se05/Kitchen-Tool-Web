@@ -39,6 +39,7 @@ CLASSES = [
     "Knife",
     "Tongs",
     "Bowl",
+    "Plate",
     "Pot",
 ]
 IDX_TO_NAME = {i: name for i, name in enumerate(CLASSES)}
@@ -169,7 +170,6 @@ def home_app():
                     note="",
                 )
             )
-
         # Push detections once per frame, non-blocking
         if detections:
             try:
