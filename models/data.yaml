@@ -1,0 +1,22 @@
+train: train/images
+val: val/images
+test: test/images
+
+nc: 6
+
+names:
+    0: Spoon
+    1: Fork
+    2: Knife
+    3: Tongs
+    4: Bowl
+    5: Pot
+
+# names:
+#     0: Spoon
+#     1: Fork
+#     2: Knife
+#     3: Tongs
+#     4: Bowl
+#     5: Plate
+#     6: Pot

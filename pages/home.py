@@ -35,25 +35,11 @@ ROOT = HERE.parent
 MODEL_LOCAL_PATH = ROOT / "models" / "best.pt"
 CLASSES = [
     "Spoon",
-    "Spoon (Wooden)",
     "Fork",
-    "Chopsticks",
-    "Knife (Butter)",
-    "Knife (Kitchen)",
-    "Knife (Peeler)",
-    "Knife (Cleaver)",
-    "Scissors",
+    "Knife",
     "Tongs",
     "Bowl",
-    "Plate",
-    "Cup",
-    "Glass",
     "Pot",
-    "Oven",
-    "Toaster",
-    "Microwave",
-    "Refrigerator",
-    "Dining Table",
 ]
 IDX_TO_NAME = {i: name for i, name in enumerate(CLASSES)}
 
