@@ -2,6 +2,11 @@
 
 A real-time computer vision web app built with Streamlit that uses OpenCV’s DNN with MobileNet SSD to detect common kitchen tools from a webcam feed. Detected classes are presented alongside confidence scores, with quick links to a “Wiki” page for additional information.
 
+Click here for [how to download and run](#getting-started)
+
+> [!IMPORTANT]
+> Our repository is big (> 1 GB) if you git clone normal way, **please follow instruction carefully**!
+
 ## Key Features
 
 - Real-time video processing via `streamlit-webrtc`
@@ -13,7 +18,7 @@ A real-time computer vision web app built with Streamlit that uses OpenCV’s DN
 
 ## Tech Stack
 
-- Python 3.x
+- Python > 3.11.x
 - [Streamlit](https://streamlit.io/)
 - [OpenCV](https://opencv.org/) (DNN module)
 - MobileNet SSD (pre-trained Caffe model)
@@ -24,7 +29,7 @@ A real-time computer vision web app built with Streamlit that uses OpenCV’s DN
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/w4se05/Kitchen-Tool-Web.git
+git clone --depth 1 https://github.com/w4se05/Kitchen-Tool-Web.git
 cd Kitchen-Tool-Web
 ```
 
@@ -77,7 +82,7 @@ streamlit run Menu.py
 ├── pages/                # Streamlit multipage files (About, Home, Wiki, etc.)
 ├── requirements.txt      # Python dependencies
 ├── runtime.txt           # Runtime pin (e.g., for certain platforms)
-├── utils/                # Helper utilities
+├── utils/                # Helper utilities, including crawling script
 └── README.md             # Project documentation
 ```
 
