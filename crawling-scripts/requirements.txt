@@ -1,6 +1,0 @@
-opencv-python
-openpyxl==3.1.5
-pillow
-ultralytics
-selenium
-tqdm

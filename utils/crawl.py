@@ -1,6 +1,6 @@
 '''
 To run this:
-python crawl_web_script/main.py --max_scroll 25 --n_img 1000 "bowl" "tô ăn cơm" "tô cơm"
+python utils/crawl.py --max_scroll 25 --n_img 1000 "bowl" "tô ăn cơm" "tô cơm"
 '''
 
 import os
@@ -256,3 +256,5 @@ def main():
 # Use it and download images
 if __name__ == "__main__":
     main()
+else:
+    print("Since 'crawl.py' is being imported from another module, the main() function will not execute automatically.")
