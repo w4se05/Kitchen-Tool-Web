@@ -1,6 +1,6 @@
 # Kitchen Tool Web: Real-Time Object Detection with Wiki Lookup
 
-A real-time computer vision web app built with Streamlit that uses OpenCV’s DNN with MobileNet SSD to detect common kitchen tools from a webcam feed. Detected classes are presented alongside confidence scores, with quick links to a “Wiki” page for additional information.
+A real-time computer vision web app built with Streamlit that uses OpenCV with Ultralytics' YOLOv11 to detect common kitchen tools from a webcam feed. Detected classes are presented alongside confidence scores, with quick links to a “Wiki” page for additional information.
 
 Click here for [how to download and run](#getting-started)
 
@@ -10,7 +10,7 @@ Click here for [how to download and run](#getting-started)
 ## Key Features
 
 - Real-time video processing via `streamlit-webrtc`
-- Object detection using MobileNet SSD (Caffe)
+- Object detection using YOLOv11
 - Adjustable confidence threshold
 - Clickable labels linking to an in-app “Wiki” page for details
 - Overlay bounding boxes, class labels, and confidence scores
@@ -20,8 +20,8 @@ Click here for [how to download and run](#getting-started)
 
 - Python > 3.11.x
 - [Streamlit](https://streamlit.io/)
-- [OpenCV](https://opencv.org/) (DNN module)
-- MobileNet SSD (pre-trained Caffe model)
+- [OpenCV](https://opencv.org/)
+- [YOLOv11](https://www.ultralytics.com/)
 - NumPy, Pandas
 
 ## Getting Started
@@ -78,7 +78,7 @@ streamlit run Menu.py
 ├── .vscode/              # Editor settings (optional)
 ├── Dockerfile            # Container build configuration
 ├── Menu.py               # Main Streamlit app entry point
-├── models/               # MobileNet SSD Caffe model files
+├── models/               # YOLOv11 model files
 ├── pages/                # Streamlit multipage files (About, Home, Wiki, etc.)
 ├── requirements.txt      # Python dependencies
 ├── runtime.txt           # Runtime pin (e.g., for certain platforms)
@@ -116,9 +116,9 @@ Then open <http://localhost:8501> in your browser.
 
 ## License
 
-This project is distributed under the MIT License.
+This project is distributed under the MIT License. However, Ultralytics model and other related codes are under Apache 2.0 License.
 
 ## Acknowledgments
 
 - Inspired by the Streamlit community discussion on `streamlit-webrtc`: [New component: streamlit-webrtc](https://discuss.streamlit.io/t/new-component-streamlit-webrtc-a-new-way-to-deal-with-real-time-media-streams/8669)
-- MobileNet SSD model authors and OpenCV contributors
+- YOLOv11 model authors, Ultralytics and OpenCV contributors
